@@ -68,19 +68,28 @@ void afiseaza_operatiuni_client(ListaOperatiuni *lista, char codClient[]) {
     }
 }
 
+int convert_data_in_int(char date[]) {
+    int zi, luna, an;
+    sscanf(date, "%d-%d-%d", &zi, &luna, &an);
+    return an * 10000 + luna * 100 + zi;
+}
+
 void afiseaza_suma_operatiuni_client_perioada(ListaOperatiuni *lista, char codClient[], char dataStart[], char dataEnd[]) {
 
     float suma = 0;
+    int start = convert_data_in_int(dataStart);
+    int end = convert_data_in_int(dataEnd);
 
     for(int i = 0; i < lista->size; i++) {
         if(!strcmp(lista->operatiuni[i].codClient, codClient)) {
-            if(strcmp(lista->operatiuni[i].dataOperatiune, dataStart) >= 0 && strcmp(lista->operatiuni[i].dataOperatiune, dataEnd) <= 0) {
+            int current_date = convert_data_in_int(lista->operatiuni[i].dataOperatiune);
+            if(current_date >= start && current_date <= end) {
                 suma += lista->operatiuni[i].sumaOperatiune;
             }
         }
     }
 
-    printf("Suma operatiunilor: %f", suma);
+    printf("Suma operatiunilor: %.2f\n", suma);
 }
 
 
@@ -118,7 +127,6 @@ void afiseaza_operatiuni(ListaOperatiuni *lista){
    }
    printf("\n");
 }
-
 
 
 
@@ -164,7 +172,6 @@ int main(){
 
     //afiseaza_operatiuni_client(&listaOperatiuni, "0000000002");
 
-    //afiseaza_suma_operatiuni_client_perioada(&listaOperatiuni, "0000000002", "15-01-2023");
 
     printf("ne sortat: \n ");
 
@@ -174,8 +181,7 @@ int main(){
     sortare_operatiuni_dupa_suma(&listaOperatiuni);
     afiseaza_operatiuni(&listaOperatiuni);
 
-    afiseaza_suma_operatiuni_client_perioada(&listaOperatiuni, "0000000002", "01-01-2023", "15-01-2023");
-
+    afiseaza_suma_operatiuni_client_perioada(&listaOperatiuni, "0000000002", "01-01-2023", "01-02-2023");
 
    return 0;
 }
